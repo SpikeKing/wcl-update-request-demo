@@ -37,6 +37,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
 
     compile 'com.jakewharton:butterknife:7.0.1' // ButterKnife标注
+
     compile 'io.reactivex:rxandroid:1.1.0' // RxAndroid
     compile 'io.reactivex:rxjava:1.1.0' // 推荐同时加载RxJava
 

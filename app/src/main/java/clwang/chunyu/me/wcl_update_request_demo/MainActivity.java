@@ -7,15 +7,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-import java.io.File;
-
-import rx.Observable;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -23,10 +26,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "DEBUG-WCL: " + MainActivity.class.getSimpleName();
     private static final String APP_NAME = "Ped_android";
-    private static final String VERSION = "1.5.0";
-    private static final String DOWNLOAD_APK_ID = "main_activity.download_apk_id";
+    private static final String VERSION = "1.9.0";
+    private static final String INFO_NAME = "春雨计步器";
+
+    @Bind(R.id.main_b_install_apk) Button mBInstallApk;
 
     private long mDownloadApkId;
+    private UpdateCallback mUpdateCallback;
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override public void onReceive(Context context, Intent intent) {
@@ -41,14 +47,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
-        UpdateService updateService =
-                ServiceFactory.createServiceFrom(UpdateService.class, UpdateService.ENDPOINT);
+        mUpdateCallback = new UpdateCallback() {
+            @Override public void onSuccess(UpdateInfo updateInfo) {
+                Toast.makeText(MainActivity.this, "有更新", Toast.LENGTH_SHORT).show();
+                downloadApk(updateInfo);
+            }
 
-        updateService.getUpdateInfo(APP_NAME, VERSION)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showInfo);
+            @Override public void onError() {
+                Toast.makeText(MainActivity.this, "无更新", Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        mBInstallApk.setOnClickListener(this::checkUpdate);
     }
 
     @Override protected void onResume() {
@@ -61,12 +73,32 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(mReceiver);
     }
 
+
+    // 检测更新
+    public void checkUpdate(View view) {
+        UpdateService updateService =
+                ServiceFactory.createServiceFrom(UpdateService.class, UpdateService.ENDPOINT);
+
+        String version = VERSION;
+        updateService.getUpdateInfo(APP_NAME, version)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::onNext, this::onError);
+    }
+
     // 显示信息
-    private void showInfo(UpdateInfo updateInfo) {
-        Log.e(TAG, "下载信息 - " + updateInfo.toString());
-        if (isDownloadManagerAvailable()) {
-            downloadApk("春雨计步器", updateInfo.data.description, updateInfo.data.appURL);
+    private void onNext(UpdateInfo updateInfo) {
+        if (updateInfo.error_code != 0 || updateInfo.data == null ||
+                updateInfo.data.appURL == null) {
+            mUpdateCallback.onError(); // 失败
+        } else {
+            mUpdateCallback.onSuccess(updateInfo);
         }
+    }
+
+    // 错误信息
+    private void onError(Throwable throwable) {
+        mUpdateCallback.onError();
     }
 
     // 最小版本号大于9
@@ -75,16 +107,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // 下载Apk
-    private void downloadApk(String title, String description, String apkUrl) {
-        apkUrl = apkUrl.trim(); // 去掉首尾空格
-
-        if (!apkUrl.startsWith("http")) {
-            apkUrl = "http://" + apkUrl; // 添加Http信息
+    private void downloadApk(UpdateInfo updateInfo) {
+        if (!isDownloadManagerAvailable()) {
+            return;
         }
+
+        String title = INFO_NAME;
+        String description = updateInfo.data.description;
+        String appUrl = updateInfo.data.appURL;
+
+        appUrl = appUrl.trim(); // 去掉首尾空格
+
+        if (!appUrl.startsWith("http")) {
+            appUrl = "http://" + appUrl; // 添加Http信息
+        }
+        Log.e(TAG, "appUrl: " + appUrl);
 
         DownloadManager.Request request;
         try {
-            request = new DownloadManager.Request(Uri.parse(apkUrl));
+            request = new DownloadManager.Request(Uri.parse(appUrl));
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -110,5 +151,12 @@ public class MainActivity extends AppCompatActivity {
             install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(install);
         }
+    }
+
+    // 错误回调
+    public interface UpdateCallback {
+        void onSuccess(UpdateInfo updateInfo);
+
+        void onError();
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">wcl-update-request-demo</string>
+    <string name="main_install_button">下载并更新</string>
 </resources>
