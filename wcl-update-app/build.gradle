@@ -1,0 +1,73 @@
+buildscript {
+    apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_build_script.gradle'
+    dependencies {
+        //noinspection GroovyAssignabilityCheck
+        classpath androidPlugin
+    }
+}
+
+// Lambda表达式
+plugins {
+    id "me.tatarka.retrolambda" version "3.2.4"
+}
+
+apply plugin: 'com.android.library'
+
+ext {
+    // 当前SDK版本号
+    sdkVersion = '0.0.1'
+}
+
+ext {
+    PUBLISH_GROUP_ID = 'me.chunyu.android'
+    PUBLISH_ARTIFACT_ID = 'cy-update-app-utils'
+    PUBLISH_VERSION = "${sdkVersion}"
+    PUBLISH_IS_JAR = false
+}
+
+//  导入两个基础的gradle文件的配置
+//  必需
+apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_base.gradle'
+//  如果上传maven，则需要配置这行
+apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/mvn_release.gradle'
+
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // 使用Java1.8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+
+    compile 'com.jakewharton:butterknife:7.0.1' // ButterKnife标注
+
+    compile 'io.reactivex:rxandroid:1.1.0' // RxAndroid
+    compile 'io.reactivex:rxjava:1.1.0' // 推荐同时加载RxJava
+
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2' // Retrofit网络处理
+    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2' // Retrofit的rx解析库
+    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2' // Retrofit的gson库
+}

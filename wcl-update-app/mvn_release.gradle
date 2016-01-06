@@ -1,0 +1,59 @@
+apply plugin: 'maven'
+
+ext.getGroupId = { ->
+    if (project.hasProperty('PUBLISH_GROUP_ID')) {
+        return project.PUBLISH_GROUP_ID;
+    } else {
+        return 'me.chunyu.android'
+    }
+}
+
+ext.getPomVersion = { ->
+    if (project.hasProperty('PUBLISH_VERSION')) {
+        return project.PUBLISH_VERSION;
+    } else {
+        return null
+    }
+}
+
+ext.getArtifactId = { ->
+    if (project.hasProperty('PUBLISH_ARTIFACT_ID')) {
+        return project.PUBLISH_ARTIFACT_ID;
+    } else {
+        return null
+    }
+}
+
+def groupId = getGroupId()
+def artifactId = getArtifactId()
+def version = getPomVersion()
+def isJar = project.hasProperty('PUBLISH_IS_JAR') && project.PUBLISH_IS_JAR
+
+def repo = "http://maven.chunyu.mobi/content/repositories/releases/"
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    //noinspection GroovyAssignabilityCheck
+    from android.sourceSets.main.java.srcDirs
+}
+
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.groupId = groupId
+        pom.artifactId = artifactId
+        pom.version = version
+        repository(url: repo) {
+            authentication(userName: maven_user, password: maven_password)
+        }
+    }
+}
+
+if (isJar) {
+    artifacts {
+        archives file: file('build/intermediates/bundles/release/classes.jar'), type: 'jar'
+    }
+}
+
+artifacts {
+    archives androidSourcesJar
+}
