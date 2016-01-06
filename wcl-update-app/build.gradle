@@ -14,14 +14,9 @@ plugins {
 apply plugin: 'com.android.library'
 
 ext {
-    // 当前SDK版本号
-    sdkVersion = '0.0.1'
-}
-
-ext {
     PUBLISH_GROUP_ID = 'me.chunyu.android'
     PUBLISH_ARTIFACT_ID = 'cy-update-app-utils'
-    PUBLISH_VERSION = "${sdkVersion}"
+    PUBLISH_VERSION = '0.0.2'
     PUBLISH_IS_JAR = false
 }
 
@@ -30,7 +25,6 @@ ext {
 apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_base.gradle'
 //  如果上传maven，则需要配置这行
 apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/mvn_release.gradle'
-
 
 android {
     compileSdkVersion 23
