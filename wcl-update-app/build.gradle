@@ -22,9 +22,9 @@ ext {
 
 //  导入两个基础的gradle文件的配置
 //  必需
-apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_base.gradle'
+//apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_base.gradle'
 //  如果上传maven，则需要配置这行
-apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/mvn_release.gradle'
+//apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/mvn_release.gradle'
 
 android {
     compileSdkVersion 23
