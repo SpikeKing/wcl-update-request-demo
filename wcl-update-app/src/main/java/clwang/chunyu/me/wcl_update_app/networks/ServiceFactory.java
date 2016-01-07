@@ -18,5 +18,4 @@ public class ServiceFactory {
                 .build();
         return adapter.create(serviceClass);
     }
-
 }

@@ -14,7 +14,7 @@ import clwang.chunyu.me.wcl_update_app.networks.UpdateInfo;
 public class MainActivity extends AppCompatActivity {
 
     private static final String APP_NAME = "Ped_android";
-    private static final String VERSION = "1.9.0";
+    private static final String VERSION = "1.0.0";
     private static final String INFO_NAME = "计步器";
     private static final String STORE_APK = "chunyu_apk";
 
