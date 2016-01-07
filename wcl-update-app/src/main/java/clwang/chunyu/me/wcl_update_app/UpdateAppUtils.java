@@ -44,6 +44,7 @@ public class UpdateAppUtils {
 
     // 显示信息
     private static void onNext(UpdateInfo updateInfo, UpdateCallback updateCallback) {
+        Log.e(TAG, "返回数据: " + updateInfo.toString());
         if (updateInfo.error_code != 0 || updateInfo.data == null ||
                 updateInfo.data.appURL == null) {
             updateCallback.onError(); // 失败
