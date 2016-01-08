@@ -1,40 +1,9 @@
-buildscript {
-//    apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_build_script.gradle'
-    ext {
-        androidPlugin = "com.android.tools.build:gradle:1.3.0"
-    }
-
-    def mavenCentral = {
-        mavenCentral()
-    }
-
-    project.buildscript.repositories(mavenCentral)
-
-    dependencies {
-        //noinspection GroovyAssignabilityCheck
-        classpath androidPlugin
-    }
-}
-
 // Lambda表达式
 plugins {
     id "me.tatarka.retrolambda" version "3.2.4"
 }
 
 apply plugin: 'com.android.library'
-
-ext {
-    PUBLISH_GROUP_ID = 'me.chunyu.android'
-    PUBLISH_ARTIFACT_ID = 'cy-update-app-utils'
-    PUBLISH_VERSION = '0.0.4'
-    PUBLISH_IS_JAR = false
-}
-
-//  导入两个基础的gradle文件的配置
-//  必需
-//apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/chunyu_base.gradle'
-//  如果上传maven，则需要配置这行
-apply from: 'https://git.chunyu.me/android/gradle_base/raw/master/gradle/mvn_release.gradle'
 
 android {
     compileSdkVersion 23
@@ -74,17 +43,6 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2' // Retrofit网络处理
     compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2' // Retrofit的rx解析库
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2' // Retrofit的gson库
-}
-
-repositories {
-    mavenCentral()
-    maven {
-        url "http://maven.chunyu.mobi/content/groups/public/"
-        credentials {
-            username maven_user
-            password maven_password
-        }
-    }
 }
 
 

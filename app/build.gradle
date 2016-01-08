@@ -26,9 +26,6 @@ dependencies {
     // 使用模块
     compile project(':wcl-update-app')
 
-    // 使用Maven
-//    compile 'me.chunyu.android:cy-update-app-utils:0.0.2'
-
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
 

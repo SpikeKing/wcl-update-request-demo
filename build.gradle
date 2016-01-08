@@ -14,17 +14,6 @@ buildscript {
 
 allprojects {
     repositories {
-        mavenCentral()
-        maven {
-            url "http://maven.chunyu.mobi/content/groups/public/"
-            credentials {
-                username maven_user
-                password maven_password
-            }
-        }
-    }
-
-    repositories {
         jcenter()
     }
 }
