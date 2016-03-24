@@ -1,8 +1,7 @@
 # wcl-update-request-demo
+实现应用内的更新版本功能
 
 > 欢迎Follow我的[GitHub](https://github.com/SpikeKing)
-
-实现应用内的更新版本功能
 
 博客: http://www.wangchenlong.org/
 
