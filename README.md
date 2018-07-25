@@ -4,7 +4,7 @@
 
 > 欢迎Follow我的[GitHub](https://github.com/SpikeKing)
 
-博客: http://www.jianshu.com/p/5a6501a934cb
+博客：http://www.jianshu.com/p/5a6501a934cb
 
 目录：https://www.jianshu.com/p/780658b79227
 
